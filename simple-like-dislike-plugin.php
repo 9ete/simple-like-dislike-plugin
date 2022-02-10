@@ -11,13 +11,18 @@
  *
  */
 global $sld_db_version, $plugin_namespace, $plugin_dir;
-$sld_db_version = '1.0.0';
+$sld_db_version = '5.0.0';
 $plugin_namespace = 'simple_like_dislike';
 $plugin_dir = plugin_dir_url( __FILE__ );
 
 require_once( 'includes/helpers.php' );
 // enqueue JS
 require_once( 'includes/hooks/activation.php' );
+
+add_action( 'plugins_loaded', 'sld_update_db_check' );
+register_activation_hook( __FILE__, 'sld_create_database' );
+register_activation_hook( __FILE__, 'sld_add_db_entry' );
+
 require_once( 'includes/hooks/scripts.php' );
 require_once( 'includes/hooks/shortcode.php' );
 

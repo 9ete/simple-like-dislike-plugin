@@ -16,3 +16,19 @@ function sld_submit_feedback() {
     echo ( 10 + intval($whatev) ) . ' - ' . $whatever;
     wp_die();
 }
+
+function sld_check_entry_id() {
+
+}
+
+function sld_add_entry() {
+
+}
+
+function sld_update_entry() {
+
+}
+
+function sld_delete_entry() {
+    
+}
