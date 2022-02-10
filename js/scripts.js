@@ -1,3 +1,5 @@
+console.log('pete here', document.querySelectorAll('[data-function="post-feedback-input"]'));
+
 function recordFeedbackValue(e) {
 	e.preventDefault();
 	alert( `{'${this.dataset.ip}','${this.dataset.value}' }` );

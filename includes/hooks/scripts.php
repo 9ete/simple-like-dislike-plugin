@@ -1,6 +1,7 @@
 <?php
 function simple_like_dislike_scripts() {   
-    wp_enqueue_script( 'simple-like-dislike-js', plugin_dir_url( __FILE__ ) . '../../js/scripts.js', array( 'jquery' ) );
+    global $plugin_dir;
+    wp_enqueue_script( 'simple-like-dislike-js', $plugin_dir . '/js/scripts.js', array( 'jquery' ), '20202020', true );
     wp_localize_script( 'simple-like-dislike-js', 'simple_like_dislike_js_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ) );
 }
 add_action('wp_enqueue_scripts', 'simple_like_dislike_scripts');
