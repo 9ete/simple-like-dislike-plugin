@@ -42,7 +42,7 @@
 
     function sld_update_db_check() {
         global $sld_db_version;
-        echo "sld version check {$sld_db_version} " . get_site_option( 'sld_db_version' );
+        // echo "sld version check {$sld_db_version} " . get_site_option( 'sld_db_version' );
         if ( get_site_option( 'sld_db_version' ) != $sld_db_version ) {
             sld_create_database();
         }
