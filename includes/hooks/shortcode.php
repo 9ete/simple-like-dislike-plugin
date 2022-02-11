@@ -1,9 +1,18 @@
 <?php
-
+function shortcode_get_user_ip_address() {
+	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+		$ip = $_SERVER['HTTP_CLIENT_IP'];
+	} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+		$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	} else {
+		$ip = $_SERVER['REMOTE_ADDR'];
+	}
+	return $ip;
+}
 add_shortcode( 'simple_like_dislike', 'simple_like_dislike_buttons' );
 function simple_like_dislike_buttons( $atts ) {
 	?>
-		<a data-function="post-feedback-input" data-value="like" data-ip="<?= get_user_ip_address() ?>" href="/">
+		<a data-function="post-feedback-input" data-value="like" data-ip="<?= shortcode_get_user_ip_address() ?>" href="/">
 			<svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" viewBox="0 0 100 100">
 				<g id="Group_569" data-name="Group 569" transform="translate(-530.002 -2363.999)">
 					<rect id="Rectangle_98" data-name="Rectangle 98" width="100" height="100" rx="50" transform="translate(530.002 2363.999)" fill="#90bc53"/>
@@ -12,7 +21,7 @@ function simple_like_dislike_buttons( $atts ) {
 			</svg>
 		</a>
 		<span>&nbsp;</span>
-		<a data-function="post-feedback-input" data-value="dislike" data-ip="<?= get_user_ip_address() ?>" href="/">
+		<a data-function="post-feedback-input" data-value="dislike" data-ip="<?= shortcode_get_user_ip_address() ?>" href="/">
 			<svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" viewBox="0 0 100 100">
 				<g id="Group_570" data-name="Group 570" transform="translate(-650.002 -2363.999)">
 					<rect id="Rectangle_99" data-name="Rectangle 99" width="100" height="100" rx="50" transform="translate(650.002 2363.999)" fill="#f76b1c"/>
