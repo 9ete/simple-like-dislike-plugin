@@ -1,7 +1,7 @@
 <?php
 	class Helpers {
 
-		public function get_user_ip_address() {
+		public static function get_user_ip_address() {
 			if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 				$ip = $_SERVER['HTTP_CLIENT_IP'];
 			} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {

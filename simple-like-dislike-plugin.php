@@ -12,15 +12,12 @@
  */
 
 class SimpleLikeDislike_Plugin {
-    // public static $plugin_dir;
-    // public static $plugin_version;
-    // public static $plugin_namespace;
     public function __construct() {
         $this->plugin_dir = plugin_dir_url( __FILE__ );
         $this->plugin_version = get_plugin_data(__FILE__)['Version'];
         $this->plugin_namespace = 'simple_like_dislike';
         $this->load_dependencies();
-        $this->install();
+        $this->install_db();
         $this->add_wp_actions();
     }
     public function get_value($value_name) {
@@ -35,10 +32,10 @@ class SimpleLikeDislike_Plugin {
         require_once( 'includes/hooks/shortcode.php' );
         require_once( 'includes/hooks/database.php' );
     }
-    protected function install() {
+    public function install_db() {
         Database::sld_create_database($this->plugin_namespace, $this->plugin_version);
     }
-    protected function update_db() {
+    public function update_db() {
         Database::sld_add_db_entry($this->plugin_namespace, $this->plugin_version);
     }
     public function check_db_version() {
@@ -51,7 +48,7 @@ class SimpleLikeDislike_Plugin {
         wp_die();
     }
     protected function add_wp_actions() {
-        register_activation_hook( __FILE__, array( $this, 'install' ) );
+        register_activation_hook( __FILE__, array( $this, 'install_db' ) );
         register_activation_hook( __FILE__, array( $this, 'update_db' ) );
         // add_action( 'wp_footer', array( $this,'displayShortcode' ) );
         add_action( 'plugins_loaded', array( $this, 'check_db_version' ) );
