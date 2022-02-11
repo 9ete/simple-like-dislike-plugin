@@ -17,7 +17,7 @@ class SimpleLikeDislike_Plugin {
     public static $plugin_namespace;
     public function __construct() {
         $this->plugin_dir = plugin_dir_url( __FILE__ );
-        $this->plugin_version = '0.0.1';//( $version = get_option('sld_db_version') ? $version : '0.0.1' );
+        $this->plugin_version = get_plugin_data(__FILE__)['Version'];
         $this->plugin_namespace = 'simple_like_dislike';
         $this->load_dependencies();
         $this->install();
