@@ -11,8 +11,4 @@
 			}
 			return $ip;
 		}
-
-		public function displayShortcode() {
-		    return do_shortcode('[simple_like_dislike]');   
-		}
 	}
