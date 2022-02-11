@@ -12,9 +12,9 @@
  */
 
 class SimpleLikeDislike_Plugin {
-    public static $plugin_dir;
-    public static $plugin_version;
-    public static $plugin_namespace;
+    // public static $plugin_dir;
+    // public static $plugin_version;
+    // public static $plugin_namespace;
     public function __construct() {
         $this->plugin_dir = plugin_dir_url( __FILE__ );
         $this->plugin_version = get_plugin_data(__FILE__)['Version'];
