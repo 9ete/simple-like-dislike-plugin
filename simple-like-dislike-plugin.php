@@ -53,7 +53,7 @@ class SimpleLikeDislike_Plugin {
     protected function add_wp_actions() {
         register_activation_hook( __FILE__, array( $this, 'install' ) );
         register_activation_hook( __FILE__, array( $this, 'update_db' ) );
-        add_action( 'wp_footer', array( 'Helpers','displayShortcode' ) );
+        // add_action( 'wp_footer', array( 'Helpers','displayShortcode' ) );
         add_action( 'plugins_loaded', array( $this, 'check_db_version' ) );
         add_action( 'wp_enqueue_scripts', array( 'Scripts', 'simple_like_dislike_scripts' ));
         add_action( 'wp_ajax_sld_submit_feedback', array( $this, 'sld_submit_feedback' ) );
