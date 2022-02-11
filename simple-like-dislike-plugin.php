@@ -17,7 +17,7 @@ class SimpleLikeDislike_Plugin {
     public static $plugin_namespace;
     public function __construct() {
         $this->plugin_dir = plugin_dir_url( __FILE__ );
-        $this->plugin_version = '0.0.67';//( $version = get_option('sld_db_version') ? $version : '0.0.1' );
+        $this->plugin_version = '0.0.1';//( $version = get_option('sld_db_version') ? $version : '0.0.1' );
         $this->plugin_namespace = 'simple_like_dislike';
         $this->load_dependencies();
         $this->install();
@@ -47,7 +47,7 @@ class SimpleLikeDislike_Plugin {
     public function sld_submit_feedback() {
         global $wpdb;
         Database::sld_add_db_entry($this->plugin_namespace, $this->plugin_version, $_POST['ip'], $_POST['postid'], $_POST['feedback']);
-        echo "like/dislike recorded";
+        echo "like/dislike recorded" . $_POST['ip'] . ' ' . $_POST['postid'];
         wp_die();
     }
     protected function add_wp_actions() {

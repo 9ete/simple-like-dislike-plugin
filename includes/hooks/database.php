@@ -14,6 +14,7 @@
                     feedback text NOT NULL,
                     post_id bigint(20),
                     userip text NOT NULL,
+                    userip_num bigint NOT NULL,
                     time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
                     PRIMARY KEY  (id),
                     INDEX post_id_ind (post_id)
@@ -31,17 +32,45 @@
             // update_option( "sld_db_version", "1.0" );
             $table_name = $wpdb->prefix . $namespace;
             $user_ip = $ip;
+            $ip_num = str_replace('.', '', $ip);
             $user_feedback = $feedback;
 
-            $wpdb->insert( 
-                $table_name, 
-                array( 
-                    'time' => current_time( 'mysql' ), 
-                    'userip' => $ip, 
-                    'feedback' => $feedback, 
-                    'post_id' => $postid, 
-                ) 
+            $insert_payload = array( 
+                'time' => current_time( 'mysql' ), 
+                'userip' => $ip, 
+                'userip_num' => $ip_num, 
+                'feedback' => $feedback, 
+                'post_id' => $postid, 
             );
+
+            $user_exists = $wpdb->get_var( // search DB for IP
+                $wpdb->prepare("SELECT userip_num FROM wp_simple_like_dislike WHERE userip_num = %d", $ip_num)
+            );
+            if($user_exists) { // if found
+                $user_has_page_feedback = $wpdb->get_var( // search DB for IP
+                    $wpdb->prepare("SELECT userip_num FROM wp_simple_like_dislike WHERE post_id = %d", $postid)
+                );
+                if($user_has_page_feedback) { // if found
+                    $wpdb->update( // update
+                        $table_name, 
+                        $insert_payload,
+                        array( 'userip_num' => $ip_num, 'post_id' => $postid),
+                        array('%s','%d')
+                    );
+
+                } else {
+                    $wpdb->insert( // insert new
+                        $table_name, 
+                        $insert_payload
+                    );
+
+                }
+            } else {
+                $wpdb->insert( // insert new
+                    $table_name, 
+                    $insert_payload
+                );
+            }
         }
 
         public static function sld_update_db_check($namespace, $version) {
