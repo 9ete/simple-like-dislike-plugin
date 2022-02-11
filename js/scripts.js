@@ -19,6 +19,10 @@ function recordFeedbackValue(e) {
 		})
 	});
 
+	this.classList.add('response-submitted');
+
+	setTimeout(() => {this.classList.remove('response-submitted')}, 2500);
+
 	// connect to wordpress and save/update DB value
 
 	// check current value for IP address
