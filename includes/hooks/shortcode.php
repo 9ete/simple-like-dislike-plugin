@@ -11,8 +11,10 @@ function shortcode_get_user_ip_address() {
 }
 add_shortcode( 'simple_like_dislike', 'simple_like_dislike_buttons' );
 function simple_like_dislike_buttons( $atts ) {
+	$ip_address = shortcode_get_user_ip_address();
+	$postid = get_the_ID();
 	?>
-		<a data-function="post-feedback-input" data-value="like" data-ip="<?= shortcode_get_user_ip_address() ?>" href="/">
+		<a data-function="post-feedback-input" data-value="like" data-postid="<?= $postid ?>" data-ip="<?= $ip_address ?>" href="/">
 			<svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" viewBox="0 0 100 100">
 				<g id="Group_569" data-name="Group 569" transform="translate(-530.002 -2363.999)">
 					<rect id="Rectangle_98" data-name="Rectangle 98" width="100" height="100" rx="50" transform="translate(530.002 2363.999)" fill="#90bc53"/>
@@ -21,7 +23,7 @@ function simple_like_dislike_buttons( $atts ) {
 			</svg>
 		</a>
 		<span>&nbsp;</span>
-		<a data-function="post-feedback-input" data-value="dislike" data-ip="<?= shortcode_get_user_ip_address() ?>" href="/">
+		<a data-function="post-feedback-input" data-value="dislike" data-postid="<?= $postid ?>" data-ip="<?= $ip_address ?>" href="/">
 			<svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" viewBox="0 0 100 100">
 				<g id="Group_570" data-name="Group 570" transform="translate(-650.002 -2363.999)">
 					<rect id="Rectangle_99" data-name="Rectangle 99" width="100" height="100" rx="50" transform="translate(650.002 2363.999)" fill="#f76b1c"/>

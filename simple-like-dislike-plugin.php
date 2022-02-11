@@ -17,7 +17,7 @@ class SimpleLikeDislike_Plugin {
     public static $plugin_namespace;
     public function __construct() {
         $this->plugin_dir = plugin_dir_url( __FILE__ );
-        $this->plugin_version = '0.0.3';//( $version = get_option('sld_db_version') ? $version : '0.0.1' );
+        $this->plugin_version = '0.0.67';//( $version = get_option('sld_db_version') ? $version : '0.0.1' );
         $this->plugin_namespace = 'simple_like_dislike';
         $this->load_dependencies();
         $this->install();
@@ -37,7 +37,6 @@ class SimpleLikeDislike_Plugin {
     }
     protected function install() {
         Activation::sld_create_database($this->plugin_namespace, $this->plugin_version);
-        Activation::sld_add_db_entry($this->plugin_namespace, $this->plugin_version);
     }
     protected function update_db() {
         Activation::sld_add_db_entry($this->plugin_namespace, $this->plugin_version);
@@ -45,20 +44,21 @@ class SimpleLikeDislike_Plugin {
     public function check_db_version() {
         Activation::sld_update_db_check($this->plugin_namespace, $this->plugin_version);
     }
+    public function sld_submit_feedback() {
+        global $wpdb;
+        Activation::sld_add_db_entry($this->plugin_namespace, $this->plugin_version, $_POST['ip'], $_POST['postid'], $_POST['feedback']);
+        echo "like/dislike recorded";
+        wp_die();
+    }
     protected function add_wp_actions() {
         register_activation_hook( __FILE__, array( $this, 'install' ) );
         register_activation_hook( __FILE__, array( $this, 'update_db' ) );
         add_action( 'wp_footer', array( 'Helpers','displayShortcode' ) );
         add_action( 'plugins_loaded', array( $this, 'check_db_version' ) );
-        add_action('wp_enqueue_scripts', array( 'Scripts', 'simple_like_dislike_scripts' ));
-        add_action( 'wp_ajax_sld_submit_feedback', array( 'Scripts', 'sld_submit_feedback' ) );
-        add_action( 'wp_ajax_nopriv_sld_submit_feedback', array( 'Scripts', 'sld_submit_feedback' ) );
+        add_action( 'wp_enqueue_scripts', array( 'Scripts', 'simple_like_dislike_scripts' ));
+        add_action( 'wp_ajax_sld_submit_feedback', array( $this, 'sld_submit_feedback' ) );
+        add_action( 'wp_ajax_nopriv_sld_submit_feedback', array( $this, 'sld_submit_feedback' ) );
     }
 }
 global $SimpleLikeDislike_Plugin;
 $SimpleLikeDislike_Plugin = new SimpleLikeDislike_Plugin();
-
-// create database entry
-// create admin
-    // create entries list
-// support do_shortcode
