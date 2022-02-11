@@ -33,20 +33,20 @@ class SimpleLikeDislike_Plugin {
         require_once( 'includes/helpers.php' );
         require_once( 'includes/hooks/scripts.php' );
         require_once( 'includes/hooks/shortcode.php' );
-        require_once( 'includes/hooks/activation.php' );
+        require_once( 'includes/hooks/database.php' );
     }
     protected function install() {
-        Activation::sld_create_database($this->plugin_namespace, $this->plugin_version);
+        Database::sld_create_database($this->plugin_namespace, $this->plugin_version);
     }
     protected function update_db() {
-        Activation::sld_add_db_entry($this->plugin_namespace, $this->plugin_version);
+        Database::sld_add_db_entry($this->plugin_namespace, $this->plugin_version);
     }
     public function check_db_version() {
-        Activation::sld_update_db_check($this->plugin_namespace, $this->plugin_version);
+        Database::sld_update_db_check($this->plugin_namespace, $this->plugin_version);
     }
     public function sld_submit_feedback() {
         global $wpdb;
-        Activation::sld_add_db_entry($this->plugin_namespace, $this->plugin_version, $_POST['ip'], $_POST['postid'], $_POST['feedback']);
+        Database::sld_add_db_entry($this->plugin_namespace, $this->plugin_version, $_POST['ip'], $_POST['postid'], $_POST['feedback']);
         echo "like/dislike recorded";
         wp_die();
     }
