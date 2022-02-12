@@ -56,6 +56,9 @@ class SimpleLikeDislike_Plugin {
         add_action( 'wp_ajax_sld_submit_feedback', array( $this, 'sld_submit_feedback' ) );
         add_action( 'wp_ajax_nopriv_sld_submit_feedback', array( $this, 'sld_submit_feedback' ) );
         add_action('wp_dashboard_setup', array( $this, 'add_dashboard_widget' ) );
+        if ( ! is_admin() ) {
+            add_action('admin_bar_menu', array( $this, 'add_toolbar_items'), 100);
+        }
     }
 
     public function widget_html() {
@@ -63,7 +66,6 @@ class SimpleLikeDislike_Plugin {
         // get all posts - title, likes, dislikes
         // show top 10
         $posts_array = get_posts(array('order'=>'asc','numberposts' => -1, 'post_type' => 'page'));
-        // var_dump($posts_array);
         echo "<div><ul>";
         echo "<li style='display:flex;justify-content:space-between;font-weight:900;'>
                     <span>Post Title</span>
@@ -73,28 +75,13 @@ class SimpleLikeDislike_Plugin {
                     </span>
                 </li>";
         foreach ($posts_array as $post) {
-            $feedback_info = $wpdb->get_results( // search DB for IP
-                $wpdb->prepare("SELECT * FROM wp_simple_like_dislike WHERE post_id = %d", $post->ID)
-            );
-            // var_dump($feedback_info);
-            $likes = 0;
-            $dislikes = 0;
-
-            foreach ($feedback_info as $feedback) {
-                if ( $feedback->feedback === 'like' ) {
-                    $likes++;
-                }
-                if ( $feedback->feedback === 'dislike' ) {
-                    $dislikes++;
-                }
-            }
-            // echo $feedback_info;
+            $page_feedback = $this->get_current_page_feedback( $post->ID );
             // search simple like dislike table by id
             echo "<li style='display:flex;justify-content:space-between'>
                     <span><span style='display:none;'>" . $post->ID . "</span> " . $post->post_title . "</span>
                     <span style='margin-right: 25px;'>
-                        <span>" . $likes . "</span><span style='width: 25px;display:inline-block;'> </span>
-                        <span>" . $dislikes . "</span>
+                        <span>" . $page_feedback[0] . "</span><span style='width: 25px;display:inline-block;'> </span>
+                        <span>" . $page_feedback[1] . "</span>
                     </span>
                 </li>";
         }
@@ -104,6 +91,38 @@ class SimpleLikeDislike_Plugin {
     public function add_dashboard_widget() {
         global $wp_meta_boxes;
         wp_add_dashboard_widget( 'add_dashboard_widget', 'Simple Like/Dislike Info', array( $this, 'widget_html' ) );
+    }
+
+    public function add_toolbar_items($admin_bar){
+        $page_feedback = $this->get_current_page_feedback( get_the_ID() );
+        $likes = $page_feedback[0];
+        $dislikes = $page_feedback[1];
+        $admin_bar->add_menu( array(
+            'id'    => 'sld-page-count',
+            'title' => "$likes likes - $dislikes dislikes",
+            'href'  => '/'
+        ));
+    }
+
+    public function get_current_page_feedback($post_id) {
+        global $wpdb;
+        $feedback_info = $wpdb->get_results( // search DB for IP
+            $wpdb->prepare("SELECT * FROM wp_simple_like_dislike WHERE post_id = %d", $post_id)
+        );
+        // var_dump($feedback_info);
+        $likes = 0;
+        $dislikes = 0;
+
+        foreach ($feedback_info as $feedback) {
+            if ( $feedback->feedback === 'like' ) {
+                $likes++;
+            }
+            if ( $feedback->feedback === 'dislike' ) {
+                $dislikes++;
+            }
+        }
+
+        return [$likes, $dislikes];
     }
 }
 global $SimpleLikeDislike_Plugin;
