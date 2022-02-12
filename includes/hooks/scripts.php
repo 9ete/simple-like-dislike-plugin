@@ -1,5 +1,5 @@
 <?php
-class Scripts extends SimpleLikeDislike_Plugin {
+class Scripts {
     public static function simple_like_dislike_scripts() {   
         global $SimpleLikeDislike_Plugin;
         wp_enqueue_script( 'simple-like-dislike-js', $SimpleLikeDislike_Plugin->plugin_dir . '/js/scripts.js', array( 'jquery' ), '20202020', true );

@@ -1,6 +1,6 @@
 <?php
 
-    class Database extends SimpleLikeDislike_Plugin {
+    class Database {
 
         public static function sld_create_database($namespace, $version) {
             global $wpdb;
