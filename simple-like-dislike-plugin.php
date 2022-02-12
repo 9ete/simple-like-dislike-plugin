@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Simple Like Dislike
  * Plugin URI:        
- * Description:       
- * Version:           0.0.1
+ * Description:       Add like/dislike feedback to all pages
+ * Version:           0.0.3
  * Author:            9ete
  * Author URI:        9ete.dev
  * Text Domain:       simple-like-dislike
@@ -55,57 +55,56 @@ class SimpleLikeDislike_Plugin {
         add_action( 'wp_enqueue_scripts', array( 'Scripts', 'simple_like_dislike_scripts' ));
         add_action( 'wp_ajax_sld_submit_feedback', array( $this, 'sld_submit_feedback' ) );
         add_action( 'wp_ajax_nopriv_sld_submit_feedback', array( $this, 'sld_submit_feedback' ) );
+        add_action('wp_dashboard_setup', array( $this, 'add_dashboard_widget' ) );
+    }
+
+    public function widget_html() {
+        global $wpdb;
+        // get all posts - title, likes, dislikes
+        // show top 10
+        $posts_array = get_posts(array('order'=>'asc','numberposts' => -1, 'post_type' => 'page'));
+        // var_dump($posts_array);
+        echo "<div><ul>";
+        echo "<li style='display:flex;justify-content:space-between;font-weight:900;'>
+                    <span>Post Title</span>
+                    <span>
+                        <span>Likes</span>
+                        <span>Dislikes</span>
+                    </span>
+                </li>";
+        foreach ($posts_array as $post) {
+            $feedback_info = $wpdb->get_results( // search DB for IP
+                $wpdb->prepare("SELECT * FROM wp_simple_like_dislike WHERE post_id = %d", $post->ID)
+            );
+            // var_dump($feedback_info);
+            $likes = 0;
+            $dislikes = 0;
+
+            foreach ($feedback_info as $feedback) {
+                if ( $feedback->feedback === 'like' ) {
+                    $likes++;
+                }
+                if ( $feedback->feedback === 'dislike' ) {
+                    $dislikes++;
+                }
+            }
+            // echo $feedback_info;
+            // search simple like dislike table by id
+            echo "<li style='display:flex;justify-content:space-between'>
+                    <span><span style='display:none;'>" . $post->ID . "</span> " . $post->post_title . "</span>
+                    <span style='margin-right: 25px;'>
+                        <span>" . $likes . "</span><span style='width: 25px;display:inline-block;'> </span>
+                        <span>" . $dislikes . "</span>
+                    </span>
+                </li>";
+        }
+        echo "</div></ul>";
+    }
+
+    public function add_dashboard_widget() {
+        global $wp_meta_boxes;
+        wp_add_dashboard_widget( 'add_dashboard_widget', 'Simple Like/Dislike Info', array( $this, 'widget_html' ) );
     }
 }
 global $SimpleLikeDislike_Plugin;
 $SimpleLikeDislike_Plugin = new SimpleLikeDislike_Plugin();
-
-add_action('wp_dashboard_setup', 'simple_like_dislike_info_widget');
-
-function simple_like_dislike_info_widget() {
-    global $wp_meta_boxes;
-    wp_add_dashboard_widget( 'simple_like_dislike_info_widget', 'Simple Like/Dislike Info', 'simple_like_dislike_info');
-}
-
-function simple_like_dislike_info() {
-    global $wpdb;
-    // get all posts - title, likes, dislikes
-    // show top 10
-    $posts_array = get_posts(array('order'=>'asc','numberposts' => -1, 'post_type' => 'page'));
-    // var_dump($posts_array);
-    echo "<div><ul>";
-    echo "<li style='display:flex;justify-content:space-between;font-weight:900;'>
-                <span>Post Title</span>
-                <span>
-                    <span>Likes</span>
-                    <span>Dislikes</span>
-                </span>
-            </li>";
-    foreach ($posts_array as $post) {
-        $feedback_info = $wpdb->get_results( // search DB for IP
-            $wpdb->prepare("SELECT * FROM wp_simple_like_dislike WHERE post_id = %d", $post->ID)
-        );
-        // var_dump($feedback_info);
-        $likes = 0;
-        $dislikes = 0;
-
-        foreach ($feedback_info as $feedback) {
-            if ( $feedback->feedback === 'like' ) {
-                $likes++;
-            }
-            if ( $feedback->feedback === 'dislike' ) {
-                $dislikes++;
-            }
-        }
-        // echo $feedback_info;
-        // search simple like dislike table by id
-        echo "<li style='display:flex;justify-content:space-between'>
-                <span><span style='display:none;'>" . $post->ID . "</span> " . $post->post_title . "</span>
-                <span style='margin-right: 25px;'>
-                    <span>" . $likes . "</span><span style='width: 25px;display:inline-block;'> </span>
-                    <span>" . $dislikes . "</span>
-                </span>
-            </li>";
-    }
-    echo "</div></ul>";
-}
