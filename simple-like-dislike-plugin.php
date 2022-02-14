@@ -43,13 +43,12 @@ class SimpleLikeDislike_Plugin {
     }
     public function sld_submit_feedback() {
         global $wpdb;
-        Database::sld_add_db_entry($this->plugin_namespace, $this->plugin_version, $_POST['ip'], $_POST['postid'], $_POST['feedback']);
-        echo "like/dislike recorded" . $_POST['ip'] . ' ' . $_POST['postid'];
+        Database::sld_add_db_entry($this->plugin_namespace, $this->plugin_version, wp_filter_nohtml_kses( $_POST['ip'] ), wp_filter_nohtml_kses( $_POST['postid'] ), wp_filter_nohtml_kses( $_POST['feedback'] ));
         wp_die();
     }
     protected function add_wp_actions() {
         register_activation_hook( __FILE__, array( $this, 'install_db' ) );
-        register_activation_hook( __FILE__, array( $this, 'update_db' ) );
+        register_activation_hook( __FILE__, array( $this, 'check_db_version' ) );
         // add_action( 'wp_footer', array( $this,'displayShortcode' ) );
         add_action( 'plugins_loaded', array( $this, 'check_db_version' ) );
         add_action( 'wp_enqueue_scripts', array( 'Scripts', 'simple_like_dislike_scripts' ));

@@ -30,19 +30,19 @@
 
         public static function sld_add_db_entry($namespace, $version, $ip = '192.168.0.0.2', $postid = 0, $feedback = 'dislike') {
             global $wpdb;
-            // update_option( "sld_db_version", "1.0" );
             $table_name = $wpdb->prefix . $namespace;
             $user_ip = $ip;
             $ip_num = str_replace('.', '', $ip);
             $user_feedback = $feedback;
 
-            $insert_payload = array( 
+            $update_payload = $insert_payload = array( 
                 'time' => current_time( 'mysql' ), 
-                'userip' => $ip, 
                 'userip_num' => $ip_num, 
                 'feedback' => $feedback, 
                 'post_id' => $postid, 
             );
+
+            $insert_payload['userip'] = $ip;
 
             $user_exists = $wpdb->get_var( // search DB for IP
                 $wpdb->prepare("SELECT userip_num FROM wp_simple_like_dislike WHERE userip_num = %d", $ip_num)
@@ -54,7 +54,7 @@
                 if($user_has_page_feedback) { // if found
                     $wpdb->update( // update
                         $table_name, 
-                        $insert_payload,
+                        $update_payload,
                         array( 'userip_num' => $ip_num, 'post_id' => $postid),
                         array('%s','%d')
                     );
