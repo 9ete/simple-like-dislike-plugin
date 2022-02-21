@@ -14,7 +14,7 @@
 class SimpleLikeDislike_Plugin {
     public function __construct() {
         $this->plugin_dir = plugin_dir_url( __FILE__ );
-        $this->plugin_version = get_plugin_data(__FILE__)['Version'];
+        $this->plugin_version = get_file_data(__FILE__, array('Version' => 'Version'), false)['Version'];
         $this->plugin_namespace = 'simple_like_dislike';
         $this->load_dependencies();
         $this->install_db();
@@ -45,9 +45,6 @@ class SimpleLikeDislike_Plugin {
     }
     public function install_db() {
         Database::sld_create_database($this->plugin_namespace, $this->plugin_version);
-    }
-    public function update_db() {
-        Database::sld_add_db_entry($this->plugin_namespace, $this->plugin_version);
     }
     public function check_db_version() {
         Database::sld_update_db_check($this->plugin_namespace, $this->plugin_version);
