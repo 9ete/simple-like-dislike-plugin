@@ -22,11 +22,16 @@ class SimpleLikeDislike_Plugin {
         $this->add_wp_actions();
     }
     protected function load_dependencies() {
-        require_once( 'includes/helpers.php' );
-        require_once( 'includes/hooks/admin.php' );
-        require_once( 'includes/hooks/scripts.php' );
-        require_once( 'includes/hooks/shortcode.php' );
-        require_once( 'includes/hooks/database.php' );
+        $dependency_array = [
+            'includes/helpers.php',
+            'includes/hooks/admin.php',
+            'includes/hooks/scripts.php',
+            'includes/hooks/shortcode.php',
+            'includes/hooks/database.php'
+        ];
+        foreach ($dependency_array as $dependency) {
+            require_once( $dependency );
+        }
     }
     protected function run_activation_hooks() {
         register_activation_hook( __FILE__, array( $this, 'install_db' ) );
