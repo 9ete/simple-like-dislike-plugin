@@ -2,7 +2,12 @@
 
     class Database {
 
-        public static function sld_create_database($namespace, $version) {
+        protected static function sld_does_table_exist() {
+            global $wpdb;
+            return ( $wpdb->get_var("SHOW TABLES LIKE 'wp_simple_like_dislike'") );
+        }
+
+        public static function sld_create_table_if_needed($namespace, $version) {
             global $wpdb;
 
             if ( get_option( "sld_db_version" ) != $version || ! self::sld_does_table_exist() ) {
@@ -71,17 +76,5 @@
                     $insert_payload
                 );
             }
-        }
-
-        public static function sld_update_db_check($namespace, $version) {
-            if ( get_site_option( 'sld_db_version' ) != $version || ! self::sld_does_table_exist() ) {
-                self::sld_create_database($namespace,$version);
-                update_option( 'sld_db_version', $version );
-            }
-        }
-
-        public static function sld_does_table_exist() {
-            global $wpdb;
-            return ( $wpdb->get_var("SHOW TABLES LIKE 'wp_simple_like_dislike'") );
         }
     }
