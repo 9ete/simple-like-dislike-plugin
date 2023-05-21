@@ -3,9 +3,10 @@
  * Plugin Name:       Simple Like Dislike
  * Plugin URI:        
  * Description:       Add like/dislike feedback to all pages
- * Version:           0.0.1
+ * Version:           0.0.2
  * Author:            9ete
  * Author URI:        9ete.dev
+ * GitHub Plugin URI: 9ete/simple-like-dislike-plugin
  * Text Domain:       simple-like-dislike
  * Domain Path:       /languages/
  *
